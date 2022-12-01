@@ -1,11 +1,13 @@
 #![feature(test)]
 
-use chrono::{Datelike, NaiveDate, Local};
+use chrono::{Datelike, Local, NaiveDate};
 use curl::easy::Easy;
 use std::fs;
 use std::fs::File;
 use std::io::{ErrorKind, Write};
 use std::path::PathBuf;
+
+mod day1;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -70,8 +72,8 @@ fn make_until_today() -> std::io::Result<()> {
 }
 
 fn main() -> std::io::Result<()> {
-    make_until_today()?;
-    // day1::main()?;
+    // make_until_today()?;
+    day1::main()?;
 
     Ok(())
 }
