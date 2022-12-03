@@ -9,6 +9,7 @@ use std::path::PathBuf;
 
 mod day1;
 mod day2;
+mod day3;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -76,6 +77,7 @@ fn main() -> std::io::Result<()> {
     make_until_today()?;
     day1::main()?;
     day2::main()?;
+    day3::main()?;
 
     Ok(())
 }
