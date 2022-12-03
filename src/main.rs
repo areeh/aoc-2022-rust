@@ -1,6 +1,6 @@
 #![feature(test)]
 
-use chrono::{Datelike, Local, NaiveDate};
+use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
 use curl::easy::Easy;
 use std::fs;
 use std::fs::File;
@@ -13,14 +13,30 @@ mod day3;
 
 const TOKEN: &str = "***REMOVED***";
 
-fn make_day(date: NaiveDate) -> std::io::Result<()> {
+fn aoc_now() -> DateTime<FixedOffset> {
+    FixedOffset::west_opt(18_000)
+        .unwrap()
+        .from_utc_datetime(&Utc::now().naive_utc())
+}
+
+fn latest_aoc_year_day() -> (i32, u32) {
+    let now = aoc_now();
+    if now.month() != 12 {
+        println!("not AoC yet, returning last day for last year");
+        (now.year() - 1, 25u32)
+    } else {
+        (now.year(), now.day())
+    }
+}
+
+fn make_day(year: i32, day: u32) -> std::io::Result<()> {
     let mut day_dir = PathBuf::from("./src/");
-    day_dir.push(format!("day{}", date.day()));
+    day_dir.push(format!("day{}", day));
 
     let url = format!(
         "https://adventofcode.com/{}/day/{}/input",
-        date.year(),
-        date.day()
+        year,
+        day
     );
 
     match fs::create_dir(&day_dir) {
@@ -63,14 +79,9 @@ fn make_day(date: NaiveDate) -> std::io::Result<()> {
     Ok(())
 }
 
-fn make_some_day(year: i32, day: u32) -> std::io::Result<()> {
-    let day = NaiveDate::from_ymd_opt(year, 12, day).expect("should be a valid date");
-    make_day(day)
-}
-
 fn make_until_today() -> std::io::Result<()> {
-    let today = Local::now().day();
-    (1..today + 1).try_for_each(|x| make_some_day(2022, x))
+    let (year, day) = latest_aoc_year_day();
+    (1..day + 1).try_for_each(|x| make_day(year, x))
 }
 
 fn main() -> std::io::Result<()> {
