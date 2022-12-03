@@ -8,6 +8,7 @@ use std::io::{ErrorKind, Write};
 use std::path::PathBuf;
 
 mod day1;
+mod day2;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -68,12 +69,13 @@ fn make_some_day(year: i32, day: u32) -> std::io::Result<()> {
 
 fn make_until_today() -> std::io::Result<()> {
     let today = Local::now().day();
-    (1..today + 1).try_for_each(|x| make_some_day(2021, x))
+    (1..today + 1).try_for_each(|x| make_some_day(2022, x))
 }
 
 fn main() -> std::io::Result<()> {
-    // make_until_today()?;
+    make_until_today()?;
     day1::main()?;
+    day2::main()?;
 
     Ok(())
 }
