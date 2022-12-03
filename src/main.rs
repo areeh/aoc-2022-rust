@@ -56,6 +56,7 @@ fn make_day(year: i32, day: u32) -> std::io::Result<()> {
         let mut file = File::create(&input_path)?;
 
         let mut easy = Easy::new();
+        easy.useragent("https://github.com/areeh")?;
         easy.cookie(&format!("session={}", TOKEN)).unwrap();
         easy.url(&url).unwrap();
         easy.write_function(move |data| {
