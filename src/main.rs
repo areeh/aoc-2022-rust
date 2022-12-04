@@ -1,5 +1,6 @@
 #![feature(test)]
 
+use anyhow::Result;
 use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
 use curl::easy::Easy;
 use std::fs;
@@ -10,6 +11,7 @@ use std::path::PathBuf;
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -29,15 +31,11 @@ fn latest_aoc_year_day() -> (i32, u32) {
     }
 }
 
-fn make_day(year: i32, day: u32) -> std::io::Result<()> {
+fn make_day(year: i32, day: u32) -> Result<()> {
     let mut day_dir = PathBuf::from("./src/");
     day_dir.push(format!("day{}", day));
 
-    let url = format!(
-        "https://adventofcode.com/{}/day/{}/input",
-        year,
-        day
-    );
+    let url = format!("https://adventofcode.com/{}/day/{}/input", year, day);
 
     match fs::create_dir(&day_dir) {
         Ok(_) => (),
@@ -80,16 +78,17 @@ fn make_day(year: i32, day: u32) -> std::io::Result<()> {
     Ok(())
 }
 
-fn make_until_today() -> std::io::Result<()> {
+fn make_until_today() -> Result<()> {
     let (year, day) = latest_aoc_year_day();
     (1..day + 1).try_for_each(|x| make_day(year, x))
 }
 
-fn main() -> std::io::Result<()> {
+fn main() -> Result<()> {
     make_until_today()?;
     day1::main()?;
     day2::main()?;
     day3::main()?;
+    day4::main()?;
 
     Ok(())
 }

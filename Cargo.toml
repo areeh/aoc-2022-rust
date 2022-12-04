@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = { version = "1.0.66", features = ["backtrace"] }
 bimap = "0.6.2"
 chrono = "0.4.23"
 curl = "0.4.44"
