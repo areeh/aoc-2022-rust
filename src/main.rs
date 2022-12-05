@@ -1,4 +1,5 @@
 #![feature(test)]
+#![feature(iter_advance_by)]
 
 use anyhow::Result;
 use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
@@ -11,6 +12,7 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+mod day5;
 mod utils;
 
 const TOKEN: &str = "***REMOVED***";
@@ -72,7 +74,9 @@ fn make_day(year: i32, day: u32) -> Result<()> {
     rs_path.push("mod.rs");
 
     if !rs_path.exists() {
+        let template = PathBuf::from("./src/template.rs");
         let _ = File::create(&rs_path)?;
+        std::fs::copy(template, rs_path)?;
     }
 
     Ok(())
@@ -89,6 +93,7 @@ fn main() -> Result<()> {
     day2::main()?;
     day3::main()?;
     day4::main()?;
+    day5::main()?;
 
     Ok(())
 }
