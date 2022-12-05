@@ -1,10 +1,8 @@
-use std::{fs, iter::once};
+use std::iter::once;
 
-fn input1() -> std::io::Result<String> {
-    fs::read_to_string("./src/day1/input.txt")
-}
+use crate::utils::read_input_to_string;
 
-fn part1(calories: String) -> u32 {
+fn part1(calories: &str) -> u32 {
     let (max_calories, _) =
         calories
             .lines()
@@ -37,7 +35,7 @@ fn maybe_insert(v: u32, mxs: &mut [u32; 3]) {
     }
 }
 
-fn part2(calories: String) -> u32 {
+fn part2(calories: &str) -> u32 {
     let (max_calories, _) =
         calories
             .lines()
@@ -57,8 +55,8 @@ fn part2(calories: String) -> u32 {
 }
 
 pub fn main() -> std::io::Result<()> {
-    let input = input1()?;
-    dbg!(part1(input.clone()));
+    let input = &read_input_to_string(1)?;
+    dbg!(part1(input));
     dbg!(part2(input));
 
     Ok(())
@@ -79,15 +77,14 @@ fn example() {
 8000
 9000
 
-10000"
-        .to_owned();
-    assert_eq!(part1(input.clone()), 24000);
+10000";
+    assert_eq!(part1(input), 24000);
     assert_eq!(part2(input), 45000);
 }
 
 #[test]
 fn task() {
-    let input = input1().unwrap();
-    assert_eq!(part1(input.clone()), 68292);
+    let input = &read_input_to_string(1).unwrap();
+    assert_eq!(part1(input), 68292);
     assert_eq!(part2(input), 203203);
 }

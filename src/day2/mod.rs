@@ -1,11 +1,7 @@
-use std::fs;
-
 use bimap::BiMap;
 use itertools::Itertools;
 
-fn input1() -> std::io::Result<String> {
-    fs::read_to_string("./src/day2/input.txt")
-}
+use crate::utils::read_input_to_string;
 
 fn create_winning_matchup_map() -> BiMap<Move, Move> {
     let mut mp = BiMap::new();
@@ -117,7 +113,7 @@ fn score_match_p1((lhs, rhs): (Move, Move), win_map: &BiMap<Move, Move>) -> u32 
     rhs.score() + rhs.outcome(&lhs, win_map).score()
 }
 
-fn part1(moves: String) -> u32 {
+fn part1(moves: &str) -> u32 {
     let win_map = create_winning_matchup_map();
     moves
         .lines()
@@ -137,7 +133,7 @@ fn score_match_p2((lhs, rhs): (Move, Res), win_map: &BiMap<Move, Move>) -> u32 {
     rhs.score() + lhs.pick_move(&rhs, win_map).score()
 }
 
-fn part2(moves: String) -> u32 {
+fn part2(moves: &str) -> u32 {
     let win_map = create_winning_matchup_map();
     moves
         .lines()
@@ -146,8 +142,8 @@ fn part2(moves: String) -> u32 {
 }
 
 pub fn main() -> std::io::Result<()> {
-    let input = input1()?;
-    dbg!(part1(input.clone()));
+    let input = &read_input_to_string(2)?;
+    dbg!(part1(input));
     dbg!(part2(input));
 
     Ok(())
@@ -157,15 +153,14 @@ pub fn main() -> std::io::Result<()> {
 fn example() {
     let input = "A Y
 B X
-C Z"
-    .to_owned();
-    assert_eq!(part1(input.clone()), 15);
+C Z";
+    assert_eq!(part1(input), 15);
     assert_eq!(part2(input), 12);
 }
 
 #[test]
 fn task() {
-    let input = input1().unwrap();
-    assert_eq!(part1(input.clone()), 14163);
+    let input = &read_input_to_string(2).unwrap();
+    assert_eq!(part1(input), 14163);
     assert_eq!(part2(input), 12091);
 }

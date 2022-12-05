@@ -1,10 +1,6 @@
-use std::fs;
-
 use itertools::Itertools;
 
-fn input1() -> std::io::Result<String> {
-    fs::read_to_string("./src/day3/input.txt")
-}
+use crate::utils::read_input_to_string;
 
 fn char_to_priority(c: char) -> u32 {
     if c.is_ascii_lowercase() {
@@ -22,7 +18,7 @@ fn char_in_both_halves(line: &str) -> char {
         .unwrap()
 }
 
-fn part1(contents: String) -> u32 {
+fn part1(contents: &str) -> u32 {
     contents
         .lines()
         .map(|line| char_to_priority(char_in_both_halves(line)))
@@ -36,7 +32,7 @@ fn common_char((one, two, three): (&str, &str, &str)) -> char {
         .unwrap()
 }
 
-fn part2(contents: String) -> u32 {
+fn part2(contents: &str) -> u32 {
     contents
         .lines()
         .tuples()
@@ -45,8 +41,8 @@ fn part2(contents: String) -> u32 {
 }
 
 pub fn main() -> std::io::Result<()> {
-    let input = input1()?;
-    dbg!(part1(input.clone()));
+    let input = &read_input_to_string(3)?;
+    dbg!(part1(input));
     dbg!(part2(input));
 
     Ok(())
@@ -59,15 +55,14 @@ jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
 PmmdzqPrVvPwwTWBwg
 wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw"
-        .to_owned();
-    assert_eq!(part1(input.clone()), 157);
+CrZsJsPPZsGzwwsLwLmpwMDw";
+    assert_eq!(part1(input), 157);
     assert_eq!(part2(input), 70);
 }
 
 #[test]
 fn task() {
-    let input = input1().unwrap();
-    assert_eq!(part1(input.clone()), 7990);
+    let input = &read_input_to_string(3).unwrap();
+    assert_eq!(part1(input), 7990);
     assert_eq!(part2(input), 2602);
 }

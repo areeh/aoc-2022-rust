@@ -7,7 +7,7 @@ use std::fs;
 use std::fs::File;
 use std::io::{ErrorKind, Write};
 use std::path::PathBuf;
-
+mod utils;
 mod day1;
 mod day2;
 mod day3;
