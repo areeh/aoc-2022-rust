@@ -57,19 +57,19 @@ pub fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-#[test]
-fn example() {
-    for (input, p1, p2) in [
-        ("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 7, ()),
-        ("bvwbjplbgvbhsrlpgdmjqwftvncz", 5, ()),
-        ("bvwbjplbgvbhsrlpgdmjqwftvncz", 6, ()),
-        ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10, ()),
-        ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11, ()),
-    ] {
-        // assert_eq!(part1(input), p1);
-        // assert_eq!(part2(input), ());
-    }
-}
+// #[test]
+// fn example() {
+//     for (input, p1, p2) in [
+//         ("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 7, ()),
+//         ("bvwbjplbgvbhsrlpgdmjqwftvncz", 5, ()),
+//         ("bvwbjplbgvbhsrlpgdmjqwftvncz", 6, ()),
+//         ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10, ()),
+//         ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11, ()),
+//     ] {
+//         // assert_eq!(part1(input), p1);
+//         // assert_eq!(part2(input), ());
+//     }
+// }
 
 #[test]
 fn task() {

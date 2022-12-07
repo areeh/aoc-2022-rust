@@ -1,5 +1,6 @@
 #![feature(test)]
 #![feature(iter_advance_by)]
+#![feature(let_chains)]
 
 use anyhow::Result;
 use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
@@ -14,6 +15,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 mod utils;
 
 const TOKEN: &str = "***REMOVED***";
@@ -96,6 +98,7 @@ fn main() -> Result<()> {
     day4::main()?;
     day5::main()?;
     day6::main()?;
+    day7::main()?;
 
     Ok(())
 }

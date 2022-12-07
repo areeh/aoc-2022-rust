@@ -95,7 +95,7 @@ move 2 from 2 to 1
 move 1 from 1 to 2
     ";
     let start = parse_stacks(&mut input.lines());
-    assert_eq!(start, vec![vec!['N', 'Z'], vec!['D', 'C', 'M'], vec!['P']]);
+    assert_eq!(start, vec![vec!['Z', 'N'], vec!['M', 'C', 'D'], vec!['P']]);
 }
 
 #[test]
