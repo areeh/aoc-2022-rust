@@ -1,6 +1,6 @@
 extern crate test;
 
-use std::collections::HashMap;
+use std::{collections::HashMap, path::PathBuf};
 
 #[cfg(test)]
 use test::Bencher;
@@ -97,15 +97,46 @@ fn build_fs(input: &str) -> FS {
     fs
 }
 
-fn get_dir_sizes(input: &str) -> Vec<usize> {
+fn dir_sizes(input: &str) -> Vec<usize> {
     let fs = build_fs(input);
     let mut dir_sizes = Vec::new();
     calc_sizes(&FileItem::Dir("/".into()), &mut dir_sizes, &fs);
     dir_sizes
 }
 
+fn dir_sizes_map(input: &str) -> Vec<usize> {
+    let mut curr_dir = PathBuf::new();
+    let mut fs: HashMap<PathBuf, usize> = HashMap::new();
+
+    for line in input.lines() {
+        match line.split_whitespace().collect::<Vec<_>>()[..] {
+            ["$", "cd", ".."] => {
+                curr_dir.pop();
+            }
+            ["$", "cd", dir] => curr_dir.push(dir),
+            ["$", "ls"] => (),
+            ["dir", _] => (),
+            [digits, _] => {
+                let size = digits.parse().unwrap();
+                curr_dir.ancestors().for_each(|v| {
+                    fs.entry(v.into())
+                        .and_modify(|dir_size| *dir_size += size)
+                        .or_insert(size);
+                })
+            }
+            _ => panic!("Unknown line {line}"),
+        }
+    }
+    fs.into_values().collect()
+}
+
 fn part1(input: &str) -> usize {
-    let dir_sizes = get_dir_sizes(input);
+    let dir_sizes = dir_sizes(input);
+    dir_sizes.iter().filter(|size| **size <= 100_000).sum()
+}
+
+fn part1_map(input: &str) -> usize {
+    let dir_sizes = dir_sizes_map(input);
     dir_sizes.iter().filter(|size| **size <= 100_000).sum()
 }
 
@@ -113,7 +144,21 @@ fn part2(input: &str) -> usize {
     const TOTAL_SPACE: usize = 70_000_000;
     const WANTED_SPACE: usize = 30_000_000;
 
-    let mut dir_sizes = get_dir_sizes(input);
+    let mut dir_sizes = dir_sizes(input);
+    dir_sizes.sort();
+    let used_space = &dir_sizes.last().unwrap();
+
+    *dir_sizes
+        .iter()
+        .find(|v| **v > (WANTED_SPACE - (TOTAL_SPACE - **used_space)))
+        .unwrap()
+}
+
+fn part2_map(input: &str) -> usize {
+    const TOTAL_SPACE: usize = 70_000_000;
+    const WANTED_SPACE: usize = 30_000_000;
+
+    let mut dir_sizes = dir_sizes_map(input);
     dir_sizes.sort();
     let used_space = &dir_sizes.last().unwrap();
 
@@ -126,7 +171,9 @@ fn part2(input: &str) -> usize {
 pub fn main() -> std::io::Result<()> {
     let input = &read_input_to_string(7)?;
     dbg!(part1(input));
+    dbg!(part1_map(input));
     dbg!(part2(input));
+    dbg!(part2_map(input));
 
     Ok(())
 }
@@ -157,14 +204,18 @@ $ ls
 5626152 d.ext
 7214296 k";
     assert_eq!(part1(input), 95437);
+    assert_eq!(part1_map(input), 95437);
     assert_eq!(part2(input), 24933642);
+    assert_eq!(part2_map(input), 24933642);
 }
 
 #[test]
 fn task() {
     let input = &read_input_to_string(7).unwrap();
     assert_eq!(part1(input), 1844187);
+    assert_eq!(part1_map(input), 1844187);
     assert_eq!(part2(input), 4978279);
+    assert_eq!(part2_map(input), 4978279);
 }
 
 #[bench]
@@ -173,5 +224,13 @@ fn task_bench(b: &mut Bencher) {
     b.iter(|| {
         part1(input);
         part2(input);
+    })
+}
+#[bench]
+fn task_bench_map(b: &mut Bencher) {
+    let input = &read_input_to_string(7).unwrap();
+    b.iter(|| {
+        part1_map(input);
+        part2_map(input);
     })
 }
