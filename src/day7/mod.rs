@@ -53,38 +53,34 @@ fn build_fs(input: &str) -> FS {
     let mut current_dir: Option<String> = None;
     let mut fs: FS = HashMap::new();
     while let Some(line) = line_iter.next() {
-        let mut word_iter = line.split_whitespace();
-        current_dir = match word_iter.next().unwrap() {
-            "$" => match word_iter.next().unwrap() {
-                "cd" => match word_iter.next().unwrap() {
-                    ".." => get_parent(current_dir),
-                    c => {
-                        line_iter.advance_by(1).unwrap();
-                        let mut children: Vec<FileItem> = Vec::new();
-                        let next_dir = make_child(current_dir.clone(), c);
+        current_dir = if let Some(dir) = line.strip_prefix("$ cd ") {
+            match dir {
+                ".." => get_parent(current_dir),
+                c => {
+                    line_iter.advance_by(1).unwrap();
+                    let mut children: Vec<FileItem> = Vec::new();
+                    let next_dir = make_child(current_dir.clone(), c);
 
-                        while let Some(line) = line_iter.next_if(|line| !line.starts_with('$')) {
-                            match line.split_once(' ') {
-                                Some(("dir", name)) => {
-                                    let child = make_child(Some(next_dir.clone()), name);
-                                    children.push(FileItem::Dir(child));
-                                }
-                                Some((digits, name)) => {
-                                    children
-                                        .push(FileItem::File(digits.parse().unwrap_or_else(|_| {
-                                        panic!("could not parse {digits} as digit, for name {name}")
-                                    })))
-                                }
-                                _ => panic!("Could not split line {line}"),
+                    while let Some(line) = line_iter.next_if(|line| !line.starts_with('$')) {
+                        match line.split_once(' ') {
+                            Some(("dir", name)) => {
+                                let child = make_child(Some(next_dir.clone()), name);
+                                children.push(FileItem::Dir(child));
                             }
+                            Some((digits, name)) => {
+                                children.push(FileItem::File(digits.parse().unwrap_or_else(|_| {
+                                    panic!("could not parse {digits} as digit, for name {name}")
+                                })))
+                            }
+                            _ => panic!("could not split line {line}"),
                         }
-                        fs.insert(next_dir.clone(), (current_dir, children.clone()));
-                        Some(next_dir)
                     }
-                },
-                c => panic!("Unrecognized command {c}"),
-            },
-            c => panic!("Expected to find a command, got {c}"),
+                    fs.insert(next_dir.clone(), (current_dir, children.clone()));
+                    Some(next_dir)
+                }
+            }
+        } else {
+            panic!("expected a cd command, got {line}");
         }
     }
     fs
