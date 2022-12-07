@@ -15,20 +15,20 @@ enum FileItem {
 
 type FS = HashMap<String, (Option<String>, Vec<FileItem>)>;
 
-fn get_parent(f: Option<String>) -> Option<String> {
-    if let Some(s) = f {
-        s.rsplit_once('/').map(|(parent, _)| parent.into())
+fn get_parent(filename: Option<String>) -> Option<String> {
+    if let Some(filename) = filename {
+        filename.rsplit_once('/').map(|(parent, _)| parent.into())
     } else {
         None
     }
 }
 
-fn make_child(f: Option<String>, next: &str) -> String {
-    if let Some(s) = f {
-        if s == "/" {
-            format!("{}{}", s, next)
+fn make_child(filename: Option<String>, next: &str) -> String {
+    if let Some(filename) = filename {
+        if filename == "/" {
+            format!("{}{}", filename, next)
         } else {
-            format!("{}/{}", s, next)
+            format!("{}/{}", filename, next)
         }
     } else {
         next.into()
@@ -52,53 +52,39 @@ fn build_fs(input: &str) -> FS {
     let mut line_iter = input.lines().peekable();
     let mut current_dir: Option<String> = None;
     let mut fs: FS = HashMap::new();
-    let mut has_dirs = true;
-    while has_dirs {
-        current_dir = if let Some(line) = line_iter.next() {
-            let mut word_iter = line.split_whitespace();
-            match word_iter.next().unwrap() {
-                "$" => {
-                    match word_iter.next().unwrap() {
-                        "cd" => {
-                            match word_iter.next().unwrap() {
-                                ".." => get_parent(current_dir),
-                                c => {
-                                    line_iter.advance_by(1).unwrap();
-                                    let mut children: Vec<FileItem> = Vec::new();
-                                    let next_dir = make_child(current_dir.clone(), c);
+    while let Some(line) = line_iter.next() {
+        let mut word_iter = line.split_whitespace();
+        current_dir = match word_iter.next().unwrap() {
+            "$" => match word_iter.next().unwrap() {
+                "cd" => match word_iter.next().unwrap() {
+                    ".." => get_parent(current_dir),
+                    c => {
+                        line_iter.advance_by(1).unwrap();
+                        let mut children: Vec<FileItem> = Vec::new();
+                        let next_dir = make_child(current_dir.clone(), c);
 
-                                    while line_iter.peek().is_some()
-                                        && !line_iter.peek().unwrap().starts_with('$')
-                                    {
-                                        let mut word_iter =
-                                            line_iter.next().unwrap().split_whitespace();
-                                        match word_iter.next().unwrap() {
-                                    "dir" => {
-                                        let child = make_child(Some(next_dir.clone()), word_iter.next().unwrap());
-                                        children.push(FileItem::Dir(child));
-                                    }
-                                    digits => children.push(FileItem::File(
-                                        digits.parse().unwrap_or_else(|_| {
-                                            panic!("could not parse {} as digit, after that is {}", digits, word_iter.next().unwrap())
-                                        }),
-                                    )),
+                        while let Some(line) = line_iter.next_if(|line| !line.starts_with('$')) {
+                            match line.split_once(' ') {
+                                Some(("dir", name)) => {
+                                    let child = make_child(Some(next_dir.clone()), name);
+                                    children.push(FileItem::Dir(child));
                                 }
-                                    }
-                                    fs.insert(next_dir.clone(), (current_dir, children.clone()));
-                                    Some(next_dir)
+                                Some((digits, name)) => {
+                                    children
+                                        .push(FileItem::File(digits.parse().unwrap_or_else(|_| {
+                                        panic!("could not parse {digits} as digit, for name {name}")
+                                    })))
                                 }
+                                _ => panic!("Could not split line {line}"),
                             }
                         }
-                        c => panic!("Unrecognized command {c}"),
+                        fs.insert(next_dir.clone(), (current_dir, children.clone()));
+                        Some(next_dir)
                     }
-                }
-                c => panic!("Expected to find a command, got {c}"),
-            }
-        } else {
-            None
-        };
-        if current_dir.is_none() {
-            has_dirs = false
+                },
+                c => panic!("Unrecognized command {c}"),
+            },
+            c => panic!("Expected to find a command, got {c}"),
         }
     }
     fs
