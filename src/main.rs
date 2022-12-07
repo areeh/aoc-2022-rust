@@ -1,6 +1,5 @@
 #![feature(test)]
 #![feature(iter_advance_by)]
-#![feature(let_chains)]
 
 use anyhow::Result;
 use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
