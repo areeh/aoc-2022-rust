@@ -49,19 +49,29 @@ fn calc_sizes(dir: &FileItem, dir_sizes: &mut Vec<usize>, fs: &FS) -> usize {
 
 fn build_fs(input: &str) -> FS {
     // TODO: Make this not horrible
-    let mut line_iter = input.lines().peekable();
+    let mut line_iter = input.lines();
     let mut current_dir: Option<String> = None;
     let mut fs: FS = HashMap::new();
-    while let Some(line) = line_iter.next() {
+
+    let mut maybe_line = line_iter.next();
+    while let Some(line) = maybe_line {
         current_dir = if let Some(dir) = line.strip_prefix("$ cd ") {
             match dir {
-                ".." => get_parent(current_dir),
+                ".." => {
+                    maybe_line = line_iter.next();
+                    get_parent(current_dir)
+                }
                 c => {
-                    line_iter.advance_by(1).unwrap();
-                    let mut children: Vec<FileItem> = Vec::new();
+                    line_iter.advance_by(1).unwrap(); // skip ls
                     let next_dir = make_child(current_dir.clone(), c);
 
-                    while let Some(line) = line_iter.next_if(|line| !line.starts_with('$')) {
+                    let mut children: Vec<FileItem> = Vec::new();
+
+                    maybe_line = line_iter.next();
+                    while let Some(line) = maybe_line {
+                        if line.starts_with('$') {
+                            break;
+                        }
                         match line.split_once(' ') {
                             Some(("dir", name)) => {
                                 let child = make_child(Some(next_dir.clone()), name);
@@ -74,6 +84,7 @@ fn build_fs(input: &str) -> FS {
                             }
                             _ => panic!("could not split line {line}"),
                         }
+                        maybe_line = line_iter.next();
                     }
                     fs.insert(next_dir.clone(), (current_dir, children.clone()));
                     Some(next_dir)
@@ -158,8 +169,8 @@ fn task() {
 
 #[bench]
 fn task_bench(b: &mut Bencher) {
+    let input = &read_input_to_string(7).unwrap();
     b.iter(|| {
-        let input = &read_input_to_string(7).unwrap();
         part1(input);
         part2(input);
     })
