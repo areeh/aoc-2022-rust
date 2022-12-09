@@ -105,7 +105,7 @@ fn parse_line_p1(line: &str) -> (Move, Move) {
     if let Some((lhs, rhs)) = line.split_whitespace().collect_tuple() {
         (parse_lhs_move(lhs), parse_rhs_move(rhs))
     } else {
-        panic!("Expected exactly 2 moves, got {}", line)
+        panic!("Expected exactly 2 moves, got {line}")
     }
 }
 
@@ -125,7 +125,7 @@ fn parse_line_p2(line: &str) -> (Move, Res) {
     if let Some((lhs, rhs)) = line.split_whitespace().collect_tuple() {
         (parse_lhs_move(lhs), parse_required_outcome(rhs))
     } else {
-        panic!("Expected exactly 2 strings, got {}", line)
+        panic!("Expected exactly 2 strings, got {line}")
     }
 }
 

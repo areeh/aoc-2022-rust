@@ -16,7 +16,7 @@ fn part1(calories: &str) -> u32 {
                 } else {
                     acc += x
                         .parse::<u32>()
-                        .unwrap_or_else(|_| panic!("could not parse {} as digit", x));
+                        .unwrap_or_else(|_| panic!("could not parse {x} as digit"));
                 }
                 (mx, acc)
             });
@@ -47,7 +47,7 @@ fn part2(calories: &str) -> u32 {
                 } else {
                     acc += x
                         .parse::<u32>()
-                        .unwrap_or_else(|_| panic!("could not parse {} as digit", x));
+                        .unwrap_or_else(|_| panic!("could not parse {x} as digit"));
                 }
                 (mxs, acc)
             });

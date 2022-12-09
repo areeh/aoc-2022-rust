@@ -26,9 +26,9 @@ fn get_parent(filename: Option<String>) -> Option<String> {
 fn make_child(filename: Option<String>, next: &str) -> String {
     if let Some(filename) = filename {
         if filename == "/" {
-            format!("{}{}", filename, next)
+            format!("{filename}{next}")
         } else {
-            format!("{}/{}", filename, next)
+            format!("{filename}/{next}")
         }
     } else {
         next.into()

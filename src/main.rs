@@ -16,6 +16,7 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
 mod utils;
 
 const TOKEN: &str = "***REMOVED***";
@@ -38,16 +39,16 @@ fn latest_aoc_year_day() -> (i32, u32) {
 
 fn make_day(year: i32, day: u32) -> Result<()> {
     let mut day_dir = PathBuf::from("./src/");
-    day_dir.push(format!("day{}", day));
+    day_dir.push(format!("day{day}"));
 
-    let url = format!("https://adventofcode.com/{}/day/{}/input", year, day);
+    let url = format!("https://adventofcode.com/{year}/day/{day}/input");
 
     match fs::create_dir(&day_dir) {
         Ok(_) => (),
         Err(error) => match error.kind() {
             ErrorKind::AlreadyExists => (),
             other_error => {
-                panic!("Problem creating directory: {:?}", other_error)
+                panic!("Problem creating directory: {other_error:?}")
             }
         },
     }
@@ -60,7 +61,7 @@ fn make_day(year: i32, day: u32) -> Result<()> {
 
         let mut easy = Easy::new();
         easy.useragent("https://github.com/areeh")?;
-        easy.cookie(&format!("session={}", TOKEN)).unwrap();
+        easy.cookie(&format!("session={TOKEN}")).unwrap();
         easy.url(&url).unwrap();
         easy.write_function(move |data| {
             file.write_all(data).unwrap();
@@ -100,6 +101,7 @@ fn main() -> Result<()> {
     day6::main()?;
     day7::main()?;
     day8::main()?;
+    day9::main()?;
 
     Ok(())
 }
