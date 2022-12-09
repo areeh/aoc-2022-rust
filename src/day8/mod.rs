@@ -1,7 +1,7 @@
 extern crate test;
 
 use itertools::Itertools;
-use ndarray::{s, Array2, ArrayView1, Axis, Zip};
+use ndarray::{s, Array2, ArrayBase, Axis, FoldWhile, Ix2, RawData, Zip};
 #[cfg(test)]
 use test::Bencher;
 
@@ -39,27 +39,29 @@ fn count_visible(visible: &Array2<u8>) -> usize {
     visible.iter().filter(|v| **v > 0).count()
 }
 
+/// See: https://github.com/rust-ndarray/ndarray/issues/866
+fn rot90<S>(arr: &mut ArrayBase<S, Ix2>)
+where
+    S: RawData,
+{
+    arr.swap_axes(0, 1);
+    arr.invert_axis(Axis(0));
+}
+
 fn part1(input: &str) -> usize {
-    let map = parse_input(input);
+    let mut map = parse_input(input);
     let mut visible = Array2::<u8>::zeros(map.raw_dim());
     mark_perimeter(&mut visible);
 
     let mut curr_max = 0;
-    for step in [-1, 1].iter() {
+
+    for _ in 0..4 {
+        rot90(&mut map);
+        rot90(&mut visible);
+
         for i in 1..map.len_of(Axis(0)) {
-            Zip::from(visible.slice_mut(s![i, ..;*step]))
-                .and(map.slice(s![i, ..;*step]))
-                .for_each(|v, &t| {
-                    if t as i32 > curr_max {
-                        curr_max = t as i32;
-                        *v += 1;
-                    }
-                });
-            curr_max = 0;
-        }
-        for i in 1..map.len_of(Axis(1)) {
-            Zip::from(visible.slice_mut(s![..;*step, i]))
-                .and(map.slice(s![..;*step, i]))
+            Zip::from(visible.slice_mut(s![i, ..]))
+                .and(map.slice(s![i, ..]))
                 .for_each(|v, &t| {
                     if t as i32 > curr_max {
                         curr_max = t as i32;
@@ -73,56 +75,42 @@ fn part1(input: &str) -> usize {
     count_visible(&visible)
 }
 
-fn score_line(i: usize, line: ArrayView1<u8>, scenic_scores: &mut Array2<u32>, row: bool) {
-    for (j, v) in line.indexed_iter() {
-        if j == 0 || j == line.len() - 1 {
-            continue;
-        }
-        let mut score = 0;
-        for t in line.slice(s![0..j;-1]) {
-            if t >= v {
-                score += 1;
-                break;
-            } else {
-                score += 1;
-            }
-        }
-
-        if row {
-            scenic_scores[[i, j]] *= score;
-        } else {
-            scenic_scores[[j, i]] *= score;
-        }
-        score = 0;
-
-        for t in line.slice(s![j + 1..line.len()]) {
-            if t >= v {
-                score += 1;
-                break;
-            } else {
-                score += 1;
-            }
-        }
-        if row {
-            scenic_scores[[i, j]] *= score;
-        } else {
-            scenic_scores[[j, i]] *= score;
-        }
-    }
-}
-
 fn part2(input: &str) -> usize {
-    let map = parse_input(input);
+    let mut map = parse_input(input);
     let mut scenic_scores = Array2::<u32>::ones(map.raw_dim());
+    let side_len = map.len_of(Axis(0));
 
-    for row_idx in 1..map.len_of(Axis(1)) - 1 {
-        let row = map.row(row_idx);
-        score_line(row_idx, row, &mut scenic_scores, true);
-    }
+    for _ in 0..2 {
+        rot90(&mut map);
+        rot90(&mut scenic_scores);
 
-    for col_idx in 1..map.len_of(Axis(0)) - 1 {
-        let col = map.column(col_idx);
-        score_line(col_idx, col, &mut scenic_scores, false);
+        Zip::from(scenic_scores.rows_mut())
+            .and(map.rows())
+            .for_each(|mut score_row, tree_row| {
+                let mut score_row = score_row.slice_mut(s![1..side_len - 1]);
+                for (i, v) in tree_row.slice(s![1..side_len - 1]).indexed_iter() {
+                    let score =
+                        Zip::from(tree_row.slice(s![..i+1;-1])).fold_while(0u32, |acc, t| {
+                            if t >= v {
+                                FoldWhile::Done(acc + 1)
+                            } else {
+                                FoldWhile::Continue(acc + 1)
+                            }
+                        });
+                    score_row[i] *= score.into_inner();
+                    
+                    // Do the right side of the base too to save some looping
+                    let score =
+                        Zip::from(tree_row.slice(s![i + 2..])).fold_while(0u32, |acc, t| {
+                            if t >= v {
+                                FoldWhile::Done(acc + 1)
+                            } else {
+                                FoldWhile::Continue(acc + 1)
+                            }
+                        });
+                    score_row[i] *= score.into_inner();
+                }
+            });
     }
 
     *scenic_scores.iter().max().unwrap() as usize
@@ -163,8 +151,8 @@ fn task() {
 
 #[bench]
 fn task_bench(b: &mut Bencher) {
+    let input = &read_input_to_string(8).unwrap();
     b.iter(|| {
-        let input = &read_input_to_string(8).unwrap();
         part1(input);
         part2(input);
     })
