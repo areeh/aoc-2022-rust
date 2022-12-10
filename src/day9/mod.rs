@@ -222,7 +222,7 @@ fn part2(input: &str) -> usize {
                     tails[i] += (forward_tail - current_tail).to_unit();
                 }
             }
-            visualization.insert(tails[tails.len()-1]);
+            visualization.insert(tails[tails.len() - 1]);
         }
     }
 
