@@ -163,7 +163,7 @@ fn part1_visualize(input: &str) -> String {
         let dir: Direction = dir.into();
         for _ in 0..count.parse().unwrap() {
             head += dir;
-            if !head.touching(tail)  {
+            if !head.touching(tail) {
                 tail += (head - tail).to_unit();
             }
             visualization[tail.to_index()] = '#';
