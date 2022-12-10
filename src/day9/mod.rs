@@ -221,10 +221,8 @@ fn part2(input: &str) -> usize {
                 if !forward_tail.touching(current_tail) {
                     tails[i] += (forward_tail - current_tail).to_unit();
                 }
-                if i == tails.len() - 1 {
-                    visualization.insert(tails[i]);
-                }
             }
+            visualization.insert(tails[tails.len()-1]);
         }
     }
 
