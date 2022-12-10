@@ -147,6 +147,7 @@ fn to_unit(v: i32) -> i32 {
     }
 }
 
+#[allow(dead_code)]
 fn part1_visualize(input: &str) -> String {
     let mut visualization = Array2::<char>::from_elem((5, 6), '.');
     visualization[Position::new(0, 4).to_index()] = 's';
@@ -236,7 +237,6 @@ fn part2(input: &str) -> usize {
 pub fn main() -> std::io::Result<()> {
     let input = &read_input_to_string(9)?;
     dbg!(part1(input));
-    dbg!(part1_visualize(input));
     dbg!(part2(input));
 
     Ok(())
