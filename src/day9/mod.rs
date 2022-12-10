@@ -216,10 +216,7 @@ fn part2(input: &str) -> usize {
         let dir: Direction = dir.into();
         for _ in 0..count.parse().unwrap() {
             tails[0] += dir;
-            for (i, current_tail) in enumerate(tails) {
-                if i == 0 {
-                    continue;
-                }
+            for (i, current_tail) in enumerate(tails).skip(1) {
                 let forward_tail = tails[i - 1];
                 if !forward_tail.touching(current_tail) {
                     tails[i] += (forward_tail - current_tail).to_unit();
