@@ -98,7 +98,7 @@ fn part2(input: &str) -> usize {
                             }
                         });
                     score_row[i] *= score.into_inner();
-                    
+
                     // Do the right side of the base too to save some looping
                     let score =
                         Zip::from(tree_row.slice(s![i + 2..])).fold_while(0u32, |acc, t| {

@@ -1,13 +1,14 @@
 #![feature(test)]
 #![feature(iter_advance_by)]
 
-use anyhow::Result;
-use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
-use curl::easy::Easy;
 use std::fs;
 use std::fs::File;
 use std::io::{ErrorKind, Write};
 use std::path::PathBuf;
+
+use anyhow::Result;
+use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
+use curl::easy::Easy;
 mod day1;
 mod day2;
 mod day3;

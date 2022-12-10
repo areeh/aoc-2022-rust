@@ -1,8 +1,6 @@
 extern crate test;
 use anyhow::{anyhow, Ok, Result};
-
 use itertools::{process_results, Itertools};
-
 #[cfg(test)]
 use test::Bencher;
 

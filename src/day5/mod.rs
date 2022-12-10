@@ -2,11 +2,10 @@ extern crate test;
 
 use std::collections::VecDeque;
 
+use lazy_static::lazy_static;
 use regex::Regex;
 #[cfg(test)]
 use test::Bencher;
-
-use lazy_static::lazy_static;
 
 use crate::utils::read_input_to_string;
 
