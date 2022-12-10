@@ -1,11 +1,13 @@
 extern crate test;
 
+use itertools_num::ItertoolsNum;
 use ndarray::Array2;
 #[cfg(test)]
 use test::Bencher;
 
 use crate::utils::read_input_to_string;
 
+#[derive(Debug, Clone)]
 enum Instruction {
     Noop,
     AddX(i32),
@@ -19,40 +21,29 @@ fn parse_line(line: &str) -> Instruction {
     }
 }
 
-fn maybe_log_register(log: &mut Vec<i32>, cycle: usize, x: i32, mut check_next: usize) -> usize {
-    if cycle >= check_next {
-        log.push(x);
-        check_next += 40;
-    }
-    check_next
-}
-
-fn program(input: &str) -> (i32, usize, Vec<i32>) {
-    let mut cycle = 0;
-    let mut x = 1;
-    let mut check_next = 20;
-    let mut log = Vec::new();
+fn program(input: &str) -> Vec<i32> {
+    let mut ret = vec![1, 0];
     for instruction in input.lines().map(parse_line) {
         match instruction {
-            Instruction::Noop => {
-                cycle += 1;
-                check_next = maybe_log_register(&mut log, cycle, x, check_next);
-            }
+            Instruction::Noop => ret.push(0),
             Instruction::AddX(value) => {
-                cycle += 2;
-                check_next = maybe_log_register(&mut log, cycle, x, check_next);
-                x += value;
+                ret.push(0); // addx starts with one idle cycle
+                ret.push(value);
             }
         }
     }
-    (x, cycle, log)
+    ret.iter().cumsum().collect()
 }
 
-fn part1(input: &str) -> usize {
-    let (_, _, log) = program(input);
-    log.iter()
-        .zip((20..).step_by(40))
-        .fold(0, |acc, (v, cycle)| acc + *v as usize * cycle)
+fn part1(input: &str) -> i32 {
+    let output = program(input);
+    output
+        .into_iter()
+        .enumerate()
+        .skip(20)
+        .step_by(40)
+        .map(|(i, v)| i as i32 * v)
+        .sum()
 }
 
 fn pretty_print(arr: &Array2<char>) -> String {
@@ -85,24 +76,11 @@ fn mark_if_at_draw_position(x: i32, cycle: usize, screen: &mut Array2<char>) {
 }
 
 fn part2(input: &str) -> String {
-    let mut cycle = 0;
-    let mut x = 1;
     let mut screen: Array2<char> = Array2::<char>::from_elem((6, 40), '.');
+    let output = program(input);
 
-    for instruction in input.lines().map(parse_line) {
-        match instruction {
-            Instruction::Noop => {
-                cycle += 1;
-                mark_if_at_draw_position(x, cycle, &mut screen);
-            }
-            Instruction::AddX(value) => {
-                cycle += 1;
-                mark_if_at_draw_position(x, cycle, &mut screen);
-                cycle += 1;
-                mark_if_at_draw_position(x, cycle, &mut screen);
-                x += value;
-            }
-        }
+    for (i, v) in output.into_iter().enumerate().skip(1) {
+        mark_if_at_draw_position(v, i, &mut screen);
     }
     // println!("{}", pretty_print(&screen));
     pretty_print(&screen)
@@ -121,7 +99,7 @@ fn tiny_example() {
     let input = "noop
 addx 3
 addx -5";
-    assert_eq!(program(input), (-1, 5, Vec::new()));
+    assert_eq!(program(input), vec![1, 1, 1, 1, 4, 4, -1]);
 }
 
 #[test]
@@ -307,8 +285,8 @@ fn task() {
 
 #[bench]
 fn task_bench(b: &mut Bencher) {
+    let input = &read_input_to_string(10).unwrap();
     b.iter(|| {
-        let input = &read_input_to_string(10).unwrap();
         part1(input);
         part2(input);
     })
