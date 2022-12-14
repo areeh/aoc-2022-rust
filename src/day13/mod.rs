@@ -62,6 +62,20 @@ impl PartialOrd for Node {
     }
 }
 
+fn maybe_push_number(
+    mut current_number: String,
+    stack_me_some_brackets: &mut VecDeque<Node>,
+) -> String {
+    if !current_number.is_empty() {
+        match stack_me_some_brackets.back_mut() {
+            Some(Node::List(ref mut l)) => l.push_back(Node::Leaf(current_number.parse().unwrap())),
+            _ => panic!("Number with no parent to put in"),
+        }
+        current_number = String::new();
+    }
+    current_number
+}
+
 fn parse_line(line: &str) -> Node {
     let mut stack_me_some_brackets = VecDeque::new();
     let mut current_number = String::new();
@@ -81,29 +95,11 @@ fn parse_line(line: &str) -> Node {
                 None
             }
             ']' => {
-                let mut current_node = stack_me_some_brackets.pop_back();
-                if !current_number.is_empty() {
-                    match current_node {
-                        Some(Node::List(ref mut l)) => {
-                            l.push_back(Node::Leaf(current_number.parse().unwrap()))
-                        }
-                        _ => panic!("Number with no parent to put in"),
-                    }
-                    current_number = String::new();
-                }
-                current_node
+                current_number = maybe_push_number(current_number, &mut stack_me_some_brackets);
+                stack_me_some_brackets.pop_back()
             }
             ',' => {
-                let current_node = stack_me_some_brackets.back_mut().unwrap();
-                if !current_number.is_empty() {
-                    match current_node {
-                        Node::List(ref mut l) => {
-                            l.push_back(Node::Leaf(current_number.parse().unwrap()))
-                        }
-                        _ => panic!("Number with no parent to put in"),
-                    };
-                }
-                current_number = String::new();
+                current_number = maybe_push_number(current_number, &mut stack_me_some_brackets);
                 None
             }
             c @ '0'..='9' => {
@@ -117,22 +113,19 @@ fn parse_line(line: &str) -> Node {
 }
 
 fn part1(input: &str) -> usize {
-    let mut right_order_idxs = Vec::new();
     input
         .lines()
         .chunks(3)
         .into_iter()
         .enumerate()
-        .for_each(|(i, v)| {
-            let v: Vec<&str> = v.collect();
-            let left = parse_line(v[0]);
-            let right = parse_line(v[1]);
-
-            if left < right {
-                right_order_idxs.push(i + 1);
+        .filter_map(|(i, mut v)| {
+            if parse_line(v.next().unwrap()) < parse_line(v.next().unwrap()) {
+                Some(i + 1)
+            } else {
+                None
             }
-        });
-    right_order_idxs.iter().sum()
+        })
+        .sum()
 }
 
 fn part2(input: &str) -> usize {
