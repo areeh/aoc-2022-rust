@@ -137,6 +137,7 @@ fn part2(input: &str) -> usize {
     mn
 }
 
+#[allow(dead_code)]
 pub fn main() -> std::io::Result<()> {
     let input = &read_input_to_string(12)?;
     dbg!(part1(input));
