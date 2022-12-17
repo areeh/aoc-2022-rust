@@ -1,11 +1,11 @@
 extern crate test;
 
 use itertools::Itertools;
-use ndarray::{s, Array2, ArrayBase, Axis, FoldWhile, Ix2, RawData, Zip};
+use ndarray::{s, Array2, Axis, FoldWhile, Zip};
 #[cfg(test)]
 use test::Bencher;
 
-use crate::utils::read_input_to_string;
+use crate::utils::{read_input_to_string, rot90};
 
 fn parse_input(input: &str) -> Array2<u8> {
     let board_width = input.lines().next().unwrap().len();
@@ -37,15 +37,6 @@ fn mark_perimeter(visible: &mut Array2<u8>) {
 
 fn count_visible(visible: &Array2<u8>) -> usize {
     visible.iter().filter(|v| **v > 0).count()
-}
-
-/// See: https://github.com/rust-ndarray/ndarray/issues/866
-fn rot90<S>(arr: &mut ArrayBase<S, Ix2>)
-where
-    S: RawData,
-{
-    arr.swap_axes(0, 1);
-    arr.invert_axis(Axis(0));
 }
 
 fn part1(input: &str) -> usize {
