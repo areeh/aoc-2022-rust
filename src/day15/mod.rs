@@ -313,8 +313,6 @@ fn part2(input: &str, mx: usize) -> usize {
         .flat_map(|diamond| diamond.walk_outer())
         .collect();
 
-
-
     let check_range = 0..(mx + 1) as isize;
 
     for pt in outer_lines.iter().permutations(2).filter_map(|v| {
