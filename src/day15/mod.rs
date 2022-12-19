@@ -36,10 +36,6 @@ fn to_unit(v: isize) -> isize {
 struct Point(isize, isize);
 
 impl Point {
-    fn to_index(self) -> (usize, usize) {
-        (self.0.try_into().unwrap(), self.1.try_into().unwrap())
-    }
-
     fn to_unit(self) -> Self {
         Self(to_unit(self.0), to_unit(self.1))
     }
@@ -118,13 +114,6 @@ impl Line {
         Point((y - self.b) / self.m, y)
     }
 
-    fn is_on(&self, point: Point) -> bool {
-        if self.m == 0 {
-            return point.1 == self.b;
-        }
-        point.0 == self.x_at(point.1).0
-    }
-
     fn walk_in_range(self, xy_range: Range<isize>) -> impl Iterator<Item = Point> {
         let valid_range = if self.m < 0 {
             *[self.x_at(xy_range.end - 1).0, xy_range.start, self.min_x]
@@ -147,15 +136,6 @@ impl Line {
         };
 
         valid_range.into_iter().map(move |x| self.y_at(x))
-    }
-
-    fn add_b(&self, b: isize) -> Line {
-        Line {
-            m: self.m,
-            b: self.b + b,
-            min_x: self.min_x,
-            max_x: self.max_x,
-        }
     }
 
     fn intersect(&self, other: &Line) -> Option<Point> {
@@ -237,16 +217,6 @@ impl Diamond {
             self.left_top,
             self.left_bottom,
             self.bottom_right,
-        ]
-        .into_iter()
-    }
-
-    fn walk_corners(center: Point, radius: usize) -> impl Iterator<Item = Point> {
-        [
-            center - Point(0, radius as isize),
-            center - Point(radius as isize, 0),
-            center + Point(0, radius as isize),
-            center + Point(radius as isize, 0),
         ]
         .into_iter()
     }
@@ -445,6 +415,6 @@ fn task_bench_3(b: &mut Bencher) {
     let input = &read_input_to_string(15).unwrap();
     b.iter(|| {
         part1(input, P1_LOC);
-        part2(input, P2_MAX);
+        // part2(input, P2_MAX);
     })
 }
