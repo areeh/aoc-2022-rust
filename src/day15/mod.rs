@@ -415,6 +415,6 @@ fn task_bench_3(b: &mut Bencher) {
     let input = &read_input_to_string(15).unwrap();
     b.iter(|| {
         part1(input, P1_LOC);
-        part2(input, P2_MAX);
+        // part2(input, P2_MAX);
     })
 }
