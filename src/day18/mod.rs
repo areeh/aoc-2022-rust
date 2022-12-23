@@ -13,7 +13,7 @@ fn part1(input: &str) {}
 fn part2(input: &str) {}
 
 pub fn main() -> std::io::Result<()> {
-    let input = &read_input_to_string(5)?;
+    let input = &read_input_to_string(18)?;
     dbg!(part1(input));
     dbg!(part2(input));
 
@@ -29,7 +29,7 @@ fn example() {
 
 #[test]
 fn task() {
-    let input = &read_input_to_string(5).unwrap();
+    let input = &read_input_to_string(18).unwrap();
     assert_eq!(part1(input), ());
     assert_eq!(part2(input), ());
 }
@@ -37,7 +37,7 @@ fn task() {
 #[bench]
 fn task_bench(b: &mut Bencher) {
     b.iter(|| {
-        let input = &read_input_to_string(5).unwrap();
+        let input = &read_input_to_string(18).unwrap();
         part1(input);
         part2(input);
     })

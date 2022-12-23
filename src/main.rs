@@ -17,6 +17,7 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
+mod day17;
 mod day2;
 mod day3;
 mod day4;
@@ -112,11 +113,12 @@ fn main() -> Result<()> {
     day9::main()?;
     day10::main()?;
     day11::main()?;
-    // day12::main()?;
+    day12::main()?;
     day13::main()?;
     day14::main()?;
     day15::main()?;
     day16::main()?;
+    day17::main()?;
 
     Ok(())
 }
