@@ -44,15 +44,7 @@ fn mixing(indices: &mut Vec<usize>, number_file: &[i64], indices_range: &Range<u
     }
 }
 
-fn part1(input: &str) -> i64 {
-    let number_file = parse_input(input);
-    let indices_range = 0..number_file.len();
-
-    // Value is start index, position is current index
-    let mut indices: Vec<_> = indices_range.clone().collect();
-
-    mixing(&mut indices, &number_file, &indices_range);
-
+fn grove_sum(indices: &[usize], number_file: &[i64]) -> i64 {
     let start_idx_of_zero = number_file.iter().position(|v| *v == 0).unwrap();
     let idx_of_zero = indices
         .iter()
@@ -63,6 +55,17 @@ fn part1(input: &str) -> i64 {
         .iter()
         .map(|offset| number_file[indices[(idx_of_zero + offset) % indices.len()]])
         .sum()
+}
+
+fn part1(input: &str) -> i64 {
+    let number_file = parse_input(input);
+    let indices_range = 0..number_file.len();
+
+    // Value is start index, position is current index
+    let mut indices: Vec<_> = indices_range.clone().collect();
+
+    mixing(&mut indices, &number_file, &indices_range);
+    grove_sum(&indices, &number_file)
 }
 
 fn part2(input: &str) -> i64 {
@@ -78,17 +81,7 @@ fn part2(input: &str) -> i64 {
     for _ in 0..10 {
         mixing(&mut indices, &number_file, &indices_range);
     }
-
-    let start_idx_of_zero = number_file.iter().position(|v| *v == 0).unwrap();
-    let idx_of_zero = indices
-        .iter()
-        .position(|idx| *idx == start_idx_of_zero)
-        .unwrap();
-
-    GROVE_COORDS
-        .iter()
-        .map(|offset| number_file[indices[(idx_of_zero + offset) % indices.len()]])
-        .sum()
+    grove_sum(&indices, &number_file)
 }
 
 pub fn main() -> std::io::Result<()> {
