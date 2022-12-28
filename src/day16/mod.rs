@@ -6,7 +6,7 @@ use std::{
 };
 
 use itertools::Itertools;
-use petgraph::{algo::floyd_warshall, dot::Dot, prelude::NodeIndex, prelude::UnGraph, visit::Bfs};
+use petgraph::{algo::floyd_warshall, prelude::NodeIndex, prelude::UnGraph, visit::Bfs};
 #[cfg(test)]
 use test::Bencher;
 
@@ -180,9 +180,9 @@ Valve II has flow rate=0; tunnels lead to valves AA, JJ
 Valve JJ has flow rate=21; tunnel leads to valve II";
     let cave = parse_nodes(input);
     let start = cave.node_indices().find(|nx| cave[*nx].1 == *"AA").unwrap();
-    println!("{:?}", Dot::new(&cave));
+    // println!("{:?}", Dot::new(&cave));
     let cave = prune_nodes(start, &cave);
-    println!("{:?}", Dot::new(&cave));
+    // println!("{:?}", Dot::new(&cave));
 }
 
 #[test]

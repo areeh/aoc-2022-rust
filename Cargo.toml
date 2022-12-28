@@ -14,5 +14,6 @@ itertools = "0.10.5"
 itertools-num = "0.1.3"
 lazy_static = "1.4.0"
 ndarray = "0.15.6"
+ndarray-ndimage = "0.3.0"
 petgraph = { git = "https://github.com/petgraph/petgraph" }
 regex = "1.7.0"

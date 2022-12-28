@@ -18,7 +18,10 @@ mod day14;
 mod day15;
 mod day16;
 mod day17;
+mod day18;
+mod day19;
 mod day2;
+mod day20;
 mod day3;
 mod day4;
 mod day5;
@@ -41,6 +44,8 @@ fn latest_aoc_year_day() -> (i32, u32) {
     if now.month() != 12 {
         println!("not AoC yet, returning last day for last year");
         (now.year() - 1, 25u32)
+    } else if now.day() > 25 {
+        (now.year(), 25u32)
     } else {
         (now.year(), now.day())
     }
@@ -80,7 +85,14 @@ fn make_day(year: i32, day: u32) -> Result<()> {
         easy.get(true).unwrap();
         easy.perform()
             .unwrap_or_else(|_| panic!("Encountered error when performing request to {:?}", &url));
-        assert_eq!(easy.response_code().unwrap(), 200);
+
+        if easy.response_code().unwrap() != 200 {
+            panic!(
+                "Got response code {} with url {}",
+                easy.response_code().unwrap(),
+                url
+            );
+        };
     }
 
     let mut rs_path = day_dir.clone();
@@ -113,12 +125,15 @@ fn main() -> Result<()> {
     day9::main()?;
     day10::main()?;
     day11::main()?;
-    day12::main()?;
+    // day12::main()?;
     day13::main()?;
     day14::main()?;
     day15::main()?;
-    day16::main()?;
+    // day16::main()?;
     day17::main()?;
+    day18::main()?;
+    day19::main()?;
+    day20::main()?;
 
     Ok(())
 }
