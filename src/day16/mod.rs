@@ -181,7 +181,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II";
     let cave = parse_nodes(input);
     let start = cave.node_indices().find(|nx| cave[*nx].1 == *"AA").unwrap();
     // println!("{:?}", Dot::new(&cave));
-    let cave = prune_nodes(start, &cave);
+    let _cave = prune_nodes(start, &cave);
     // println!("{:?}", Dot::new(&cave));
 }
 

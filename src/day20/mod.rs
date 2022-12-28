@@ -1,10 +1,10 @@
 extern crate test;
 
-use std::collections::{HashMap, HashSet};
-use std::ops::Range;
-use std::{collections::VecDeque, hash::Hash};
 
-use itertools::{enumerate, Itertools};
+use std::ops::Range;
+
+
+
 #[cfg(test)]
 use test::Bencher;
 
@@ -118,7 +118,7 @@ fn example() {
 
 #[test]
 fn task() {
-    let input = &read_input_to_string(20).unwrap();
+    let _input = &read_input_to_string(20).unwrap();
     // assert_eq!(part1(input), ());
     // assert_eq!(part2(input), ());
 }
@@ -126,7 +126,7 @@ fn task() {
 #[bench]
 fn task_bench(b: &mut Bencher) {
     b.iter(|| {
-        let input = &read_input_to_string(20).unwrap();
+        let _input = &read_input_to_string(20).unwrap();
         // part1(input);
         // part2(input);
     })
