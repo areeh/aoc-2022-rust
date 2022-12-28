@@ -1,9 +1,6 @@
 extern crate test;
 
-
 use std::ops::Range;
-
-
 
 #[cfg(test)]
 use test::Bencher;
@@ -45,7 +42,6 @@ fn mixing(indices: &mut Vec<usize>, number_file: &[i64], indices_range: &Range<u
         // }
         // dbg!(&mixing);
     }
-
 }
 
 fn part1(input: &str) -> i64 {
