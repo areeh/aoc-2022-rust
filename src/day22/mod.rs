@@ -295,7 +295,6 @@ fn wrap_position(pos: Position, facing: Direction, board: &Board) -> Option<Posi
 }
 
 fn password(pos: Position, facing: Direction) -> usize {
-    dbg!(pos);
     1000 * pos.y + 4 * pos.x + facing.value()
 }
 
@@ -347,52 +346,50 @@ fn wrap_position_cube(
     transition_table: &Transitions,
 ) -> Option<(usize, Position, Direction)> {
     let cube_dim = boards[0].dim().0;
-    let board_min_landing = 1;
-    let board_max_landing = cube_dim - 2;
-    let (new_board, enter_side) = get_transition((current_board, facing), transition_table);
+    let board_min = 1;
+    let board_max = cube_dim - 2;
+    let (new_board_number, enter_side) = get_transition((current_board, facing), transition_table);
     let new_pos = match (facing, enter_side) {
-        (Direction::Up, Direction::Up) => {
-            Position::new(invert_index(pos.x, cube_dim), board_min_landing)
-        }
-        (Direction::Up, Direction::Left) => Position::new(board_min_landing, pos.x),
-        (Direction::Up, Direction::Down) => Position::new(pos.x, board_max_landing),
+        (Direction::Up, Direction::Up) => Position::new(invert_index(pos.x, cube_dim), board_min),
+        (Direction::Up, Direction::Left) => Position::new(board_min, pos.x),
+        (Direction::Up, Direction::Down) => Position::new(pos.x, board_max),
         (Direction::Up, Direction::Right) => {
-            Position::new(board_max_landing, invert_index(pos.x, cube_dim))
+            Position::new(board_max, invert_index(pos.x, cube_dim))
         }
 
-        (Direction::Left, Direction::Up) => Position::new(pos.y, board_min_landing),
+        (Direction::Left, Direction::Up) => Position::new(pos.y, board_min),
         (Direction::Left, Direction::Left) => {
-            Position::new(board_min_landing, invert_index(pos.y, cube_dim))
+            Position::new(board_min, invert_index(pos.y, cube_dim))
         }
         (Direction::Left, Direction::Down) => {
-            Position::new(invert_index(pos.y, cube_dim), board_max_landing)
+            Position::new(invert_index(pos.y, cube_dim), board_max)
         }
-        (Direction::Left, Direction::Right) => Position::new(board_max_landing, pos.y),
+        (Direction::Left, Direction::Right) => Position::new(board_max, pos.y),
 
-        (Direction::Down, Direction::Up) => Position::new(pos.x, board_min_landing),
+        (Direction::Down, Direction::Up) => Position::new(pos.x, board_min),
         (Direction::Down, Direction::Left) => {
-            Position::new(board_min_landing, invert_index(pos.x, cube_dim))
+            Position::new(board_min, invert_index(pos.x, cube_dim))
         }
         (Direction::Down, Direction::Down) => {
-            Position::new(invert_index(pos.x, cube_dim), board_max_landing)
+            Position::new(invert_index(pos.x, cube_dim), board_max)
         }
-        (Direction::Down, Direction::Right) => Position::new(board_max_landing, pos.x),
+        (Direction::Down, Direction::Right) => Position::new(board_max, pos.x),
 
         (Direction::Right, Direction::Up) => {
-            Position::new(invert_index(pos.y, cube_dim), board_min_landing)
+            Position::new(invert_index(pos.y, cube_dim), board_min)
         }
-        (Direction::Right, Direction::Left) => Position::new(board_min_landing, pos.y),
-        (Direction::Right, Direction::Down) => Position::new(pos.y, board_max_landing),
+        (Direction::Right, Direction::Left) => Position::new(board_min, pos.y),
+        (Direction::Right, Direction::Down) => Position::new(pos.y, board_max),
         (Direction::Right, Direction::Right) => {
-            Position::new(board_max_landing, invert_index(pos.y, cube_dim))
+            Position::new(board_max, invert_index(pos.y, cube_dim))
         }
     };
 
-    println!("Came from {pos:?} {facing:?} ended on position {new_pos:?} {enter_side:?}");
+    // println!("Came from {pos:?} {facing:?} ended on position {new_pos:?} {enter_side:?}");
 
-    if boards[new_board][new_pos.to_index()] == '#' {
+    if boards[new_board_number][new_pos.to_index()] == '#' {
         return None;
-    } else if boards[new_board][new_pos.to_index()] == ' ' {
+    } else if boards[new_board_number][new_pos.to_index()] == ' ' {
         panic!("Landed on empty in new board.")
     }
 
@@ -400,7 +397,7 @@ fn wrap_position_cube(
     new_facing.turn('L');
     new_facing.turn('L');
 
-    Some((new_board, new_pos, new_facing))
+    Some((new_board_number, new_pos, new_facing))
 }
 
 type Transitions = BiMap<(usize, Direction), (usize, Direction)>;
@@ -408,6 +405,7 @@ type Transitions = BiMap<(usize, Direction), (usize, Direction)>;
 fn make_transition_table(example: bool) -> Transitions {
     let mut transition_table: BiMap<(usize, Direction), (usize, Direction)> = BiMap::new();
 
+    // Transition table according to manualy folding the squares in the input into a cube
     if example {
         transition_table.insert((0, Direction::Up), (1, Direction::Up));
         transition_table.insert((0, Direction::Left), (2, Direction::Up));
@@ -504,15 +502,17 @@ fn part2(input: &str, example: bool) -> usize {
                         '.' => pos = next,
                         '#' => break,
                         ' ' => {
-                            if let Some((next_board, next_pos, next_facing)) = wrap_position_cube(
-                                pos,
-                                facing,
-                                &boards,
-                                board_number,
-                                &transition_table,
-                            ) {
+                            if let Some((next_board_number, next_pos, next_facing)) =
+                                wrap_position_cube(
+                                    pos,
+                                    facing,
+                                    &boards,
+                                    board_number,
+                                    &transition_table,
+                                )
+                            {
                                 pos = next_pos;
-                                board_number = next_board;
+                                board_number = next_board_number;
                                 facing = next_facing;
                             } else {
                                 break;
