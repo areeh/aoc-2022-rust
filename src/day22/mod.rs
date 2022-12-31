@@ -1,7 +1,6 @@
 extern crate test;
 
 use std::{
-    collections::{HashMap, HashSet},
     iter::zip,
     ops::{Add, AddAssign, Sub},
     str::Chars,
@@ -465,7 +464,10 @@ fn get_transition(transition: (usize, Direction), table: &Transitions) -> (usize
     } else {
         panic!("Transition {transition:?} not found");
     };
-    println!("Transitioned from {transition:?} to {:?}", (board_number, direction));
+    println!(
+        "Transitioned from {transition:?} to {:?}",
+        (board_number, direction)
+    );
     (board_number, direction)
 }
 
@@ -475,7 +477,7 @@ fn global_pos(pos: Position, board_number: usize, starts: [(usize, usize); 6]) -
 
 fn part2(input: &str, example: bool) -> usize {
     let (board, path) = input.split_once("\n\n").unwrap();
-    let (mut boards, starts) = parse_cube_board(board);
+    let (boards, starts) = parse_cube_board(board);
 
     let transition_table = make_transition_table(example);
 
