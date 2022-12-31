@@ -58,6 +58,7 @@ fn next_start(col: usize, row: usize, cube_dim: usize, input_lines: &[&str]) -> 
     }
 }
 
+/// Squares of the cube are collected in the order left to right then top to bottom
 fn parse_cube_board(board: &str) -> ([Board; 6], [(usize, usize); 6]) {
     let cube_dim = board
         .lines()
