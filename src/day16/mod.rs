@@ -158,6 +158,7 @@ fn part2(input: &str) -> usize {
         .unwrap()
 }
 
+#[allow(dead_code)]
 pub fn main() -> std::io::Result<()> {
     let input = &read_input_to_string(16)?;
     dbg!(part1(input));

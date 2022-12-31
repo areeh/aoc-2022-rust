@@ -556,7 +556,7 @@ fn example() {
         ......#.
 
 10R5L5R10L4R5L5";
-    // assert_eq!(part1(input), 6032);
+    assert_eq!(part1(input), 6032);
     assert_eq!(part2(input, true), 5031);
 }
 
@@ -564,7 +564,7 @@ fn example() {
 fn task() {
     let input = &read_input_to_string(22).unwrap();
     assert_eq!(part1(input), 123046);
-    // assert_eq!(part2(input), ());
+    assert_eq!(part2(input, false), 195032);
 }
 
 #[bench]

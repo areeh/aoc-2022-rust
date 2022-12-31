@@ -138,7 +138,7 @@ fn parts(input: &str, shapes_to_land: usize) -> usize {
     let mut shape = Shape::initial(&ShapeType::HorizontalLine, 3); // Placeholder
     let mut shape_count = 0;
 
-    let mut shape_idx = 0;
+    let mut shape_idx;
     let mut jet_idx = 0;
 
     let mut extra_height = 0;
