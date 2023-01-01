@@ -237,6 +237,7 @@ fn visualize(board: &Board, pos: Position, facing: Direction) -> String {
     pretty_print(&board)
 }
 
+#[allow(dead_code)]
 fn visualize_print(board: &Board, pos: Position, facing: Direction) {
     println!("{}", visualize(board, pos, facing));
 }
@@ -463,10 +464,10 @@ fn get_transition(transition: (usize, Direction), table: &Transitions) -> (usize
     } else {
         panic!("Transition {transition:?} not found");
     };
-    println!(
-        "Transitioned from {transition:?} to {:?}",
-        (board_number, direction)
-    );
+    // println!(
+    //     "Transitioned from {transition:?} to {:?}",
+    //     (board_number, direction)
+    // );
     (board_number, direction)
 }
 

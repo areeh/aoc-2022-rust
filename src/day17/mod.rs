@@ -116,6 +116,7 @@ impl Tower {
         pretty_print(&arr)
     }
 
+    #[allow(dead_code)]
     fn print_visualize(&self) {
         println!("{}", self.visualize());
     }
