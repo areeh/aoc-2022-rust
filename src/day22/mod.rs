@@ -76,7 +76,9 @@ fn parse_cube_board(board: &str) -> ([Board; 6], [(usize, usize); 6]) {
     for _ in 0..6 {
         (col, row) = next_start(col, row, cube_dim, &input_lines);
         starts.push((col, row));
-        dbg!(col, row);
+
+        // dbg!(col, row);
+
         let mut next_board = Vec::new();
         for data_row in input_lines.iter().skip(row).take(cube_dim) {
             next_board.append(&mut data_row[col..col + cube_dim].chars().collect_vec())
@@ -303,7 +305,6 @@ fn password(pos: Position, facing: Direction) -> usize {
 fn part1(input: &str) -> usize {
     let (board, path) = parse_input(input);
     let board = pad(&board, ' ');
-    dbg!(path);
 
     let initial_pos = board.indexed_iter().find(|(_, v)| **v == '.').unwrap().0;
     let mut pos = Position::new(initial_pos.1, initial_pos.0);
