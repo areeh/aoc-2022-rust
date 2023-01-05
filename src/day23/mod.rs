@@ -228,11 +228,7 @@ fn parts(input: &str, max_rounds: Option<usize>) -> (Vec<Position>, usize) {
 
     let mut round = 0;
 
-    loop {
-        if !changed {
-            break;
-        }
-
+    while changed {
         for i in 0..elves.len() {
             let pos = elves[i];
             let next_pos =
