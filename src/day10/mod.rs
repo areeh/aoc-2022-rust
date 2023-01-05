@@ -65,7 +65,7 @@ fn position(cycle: usize) -> (usize, usize) {
 }
 
 fn sprite_at_draw_position(x: i32, col: usize) -> bool {
-    (x - col as i32).abs() <= 1
+    x.abs_diff(col as i32) <= 1
 }
 
 fn mark_if_at_draw_position(x: i32, cycle: usize, screen: &mut Array2<char>) {

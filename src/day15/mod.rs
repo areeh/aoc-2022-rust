@@ -41,7 +41,7 @@ impl Point {
     }
 
     fn manhattan(&self, other: &Point) -> usize {
-        ((self.0 - other.0).abs() + (self.1 - other.1).abs()) as usize
+        self.0.abs_diff(other.0) + self.1.abs_diff(other.1)
     }
 }
 

@@ -26,6 +26,7 @@ mod day21;
 mod day22;
 mod day23;
 mod day24;
+mod day25;
 mod day3;
 mod day4;
 mod day5;
@@ -142,6 +143,7 @@ fn main() -> Result<()> {
     day22::main()?;
     day23::main()?;
     day24::main()?;
+    day25::main()?;
 
     Ok(())
 }
