@@ -36,7 +36,7 @@ mod day8;
 mod day9;
 mod utils;
 
-const TOKEN: &str = "***REMOVED***";
+const TOKEN: &str = "";
 
 fn aoc_now() -> DateTime<FixedOffset> {
     FixedOffset::west_opt(18_000)
